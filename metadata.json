@@ -1,0 +1,6 @@
+{
+  "name": "Nexus Auth",
+  "description": "A modern, elegant JWT authentication system built with Next.js, featuring secure email/password flows and a polished dark interface.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
