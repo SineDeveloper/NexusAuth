@@ -38,6 +38,11 @@ export default function Navbar({ user }: NavbarProps) {
       <div className="flex items-center gap-8">
         {user ? (
           <>
+            <div className="hidden md:flex items-center gap-6 mr-4 border-r border-white/5 pr-8">
+              <Link href="/dashboard" className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors">Console</Link>
+              <Link href="/profile" className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors">Profile</Link>
+              <Link href="/settings" className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors">Config</Link>
+            </div>
             <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/5 bg-white/[0.03] backdrop-blur-md">
               <User className="w-3.5 h-3.5 text-blue-400" />
               <span className="text-xs font-medium text-slate-300">{user.name}</span>

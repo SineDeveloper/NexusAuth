@@ -1,18 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import { z } from 'zod';
 import { findUserByEmail } from '@/lib/db';
 import { encrypt, TOKEN_NAME } from '@/lib/auth';
 
+const loginSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(1, 'Password is required'),
+});
+
 export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json();
+    const body = await req.json();
+    const validation = loginSchema.safeParse(body);
 
-    if (!email || !password) {
+    if (!validation.success) {
       return NextResponse.json(
-        { error: 'Missing email or password' },
+        { error: validation.error.issues[0].message },
         { status: 400 }
       );
     }
+
+    const { email, password } = validation.data;
 
     const user = findUserByEmail(email);
 

@@ -1,18 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import { z } from 'zod';
 import { findUserByEmail, addUser } from '@/lib/db';
 import { encrypt, TOKEN_NAME } from '@/lib/auth';
 
+const registerSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+});
+
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, name } = await req.json();
+    const body = await req.json();
+    const validation = registerSchema.safeParse(body);
 
-    if (!email || !password || !name) {
+    if (!validation.success) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: validation.error.issues[0].message },
         { status: 400 }
       );
     }
+
+    const { email, password, name } = validation.data;
 
     // Check if user already exists
     if (findUserByEmail(email)) {

@@ -4,21 +4,21 @@ This file captures the context and architectural decisions for this project, ena
 
 ## 🟢 Context & Status
 - **Project Name**: Nexus Auth
-- **Core Stack**: Next.js 15 (App Router), TypeScript, Tailwind CSS, Motion.
-- **Current Milestone**: Basic JWT Auth flow implemented (Register, Login, Logout, Middleware).
-- **Design Aesthetic**: "Elegant Dark Luxury" — High contrast, minimal, tracking-tight typography, and glassmorphism.
+- **Core Stack**: Next.js 15 (App Router), TypeScript, Tailwind CSS, Motion, Zod.
+- **Current Milestone**: Full auth flow with Profile and Settings views implemented. Zod validation active.
+- **Design Aesthetic**: "Frosted Glass Dark" — Translucent layers, vibrant background glows, and high-readability typography.
 
 ## 🛠 Architectural Decisions
-1. **JWT Library**: Used `jose` instead of `jsonwebtoken` because `jose` is compatible with the Next.js Edge Runtime (required for Middleware on Vercel).
-2. **Auth Strategy**: Stateless session stored in a `httpOnly` cookie named `nexus_auth_token`.
-3. **Database**: Implemented a mock in-memory layer in `lib/db.ts` to allow immediate testing. It handles user searching and addition.
+1. **JWT Library**: `jose` used for Edge-compatible middleware.
+2. **Validation**: `Zod` implemented in all write-based API routes (Login, Register).
+3. **Mock Data**: In-memory store refined. Profile and Settings pages consume session data directly from the JWT payload.
+4. **Navigation**: Centralized in `Navbar` with conditional rendering for authenticated states.
 
 ## 🔜 Recommended Next Steps
-1. **Database Integration**: Replace `lib/db.ts` with a real DB (Prisma + Postgres or Firebase).
-2. **Persistence**: The mock DB resets on rebuilds/restarts. Users need to re-register.
-3. **Validation**: Use `zod` in API routes for stricter input validation.
-4. **MFA**: Add multi-factor authentication or Google OAuth as a secondary path.
-5. **Profile Page**: Create `/profile` to allow users to update their information.
+1. **Real Database Integration**: Transition `lib/db.ts` to Prisma or Firebase to persist users across restarts.
+2. **MFA Protocol**: Add a mock or real TOTP flow to the Security settings.
+3. **Google OAuth**: Implement `lucide-react` icons and `jose` support for third-party providers.
+4. **Password Reset**: Build the "Forgot Password" flow with a mock email sender.
 
 ## ⚠️ Known Implementation Details
 - `JWT_SECRET` is required in `.env`.
