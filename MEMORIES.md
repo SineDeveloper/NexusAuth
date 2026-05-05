@@ -1,27 +1,34 @@
 # AI Memory: Nexus Auth
+> **Agent Note:** This project is a Next.js 15+ App Router application with a "Mock-First" development strategy. Use this as your primary context.
 
-This file captures the context and architectural decisions for this project, enabling other AI agents to continue work seamlessly.
+## 📁 System Architecture
+- **Auth Core**: `lib/auth.ts` -> Uses `jose` for Edge-compatible JWT handling.
+- **Middleware**: `middleware.ts` -> Protects `/(dashboard|profile|settings)`.
+- **Database Layer**: `lib/db.ts` -> **MOCK**. Uses a global array to persist users between HMR triggers. DO NOT replace with a real DB until explicitly requested.
+- **Validation**: `Zod` used in `app/api/auth/*` for safe parsing.
 
-## 🟢 Context & Status
-- **Project Name**: Nexus Auth
-- **Core Stack**: Next.js 15 (App Router), TypeScript, Tailwind CSS, Motion, Zod.
-- **Current Milestone**: Full auth flow with Profile and Settings views implemented. Zod validation active.
-- **Design Aesthetic**: "Frosted Glass Dark" — Translucent layers, vibrant background glows, and high-readability typography.
+## 🎨 Styling Tokens (Frosted Glass)
+- **Background**: `#050505` (Deep Black).
+- **Surface**: `bg-white/[0.03]`, `backdrop-blur-2xl`, `border-white/10`.
+- **Accents**: 
+  - Blue (`blue-600/10` glows, `text-blue-400` highlights).
+  - Purple (`purple-600/10` glows, `text-purple-400` settings icons).
+  - White (Typography, primary buttons).
 
-## 🛠 Architectural Decisions
-1. **JWT Library**: `jose` used for Edge-compatible middleware.
-2. **Validation**: `Zod` implemented in all write-based API routes (Login, Register).
-3. **Mock Data**: In-memory store refined. Profile and Settings pages consume session data directly from the JWT payload.
-4. **Navigation**: Centralized in `Navbar` with conditional rendering for authenticated states.
+## 🚀 Mock Roadmap (Pre-Supabase Phase)
+The priority is to build out a complete "simulated" ecosystem before connecting physical infrastructure.
 
-## 🔜 Recommended Next Steps
-1. **Real Database Integration**: Transition `lib/db.ts` to Prisma or Firebase to persist users across restarts.
-2. **MFA Protocol**: Add a mock or real TOTP flow to the Security settings.
-3. **Google OAuth**: Implement `lucide-react` icons and `jose` support for third-party providers.
-4. **Password Reset**: Build the "Forgot Password" flow with a mock email sender.
+1. **Feature: Mock MFA**
+   - **Logic**: Add `mfaEnabled: boolean` to User type.
+   - **Flow**: Login -> Redirect to `/verify` -> Check for static code `123456` -> Issue JWT.
 
-## ⚠️ Known Implementation Details
-- `JWT_SECRET` is required in `.env`.
-- Middleware protects `/dashboard`.
-- Layout uses `suppressHydrationWarning` for cleaner hydration with dark theme variables.
-- `motion` is imported from `motion/react` as per latest updates.
+2. **Feature: Mock Password Reset**
+   - **Logic**: UI flow for `app/forgot-password`.
+   - **Terminal**: `console.log` the "Reset Link" instead of sending email.
+
+3. **Feature: Audit Logs**
+   - **Logic**: Store a list of `events` in `lib/db.ts`.
+   - **Display**: Show "Last login from IP X" on the Profile page.
+
+## 🛑 Final Transition (Supabase)
+Only when all UI/UX logic for the above features is finalized will we transition `lib/db.ts` and `lib/auth.ts` to utilize `@supabase/supabase-js`.
